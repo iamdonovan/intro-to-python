@@ -19,14 +19,16 @@ def main():
 
     # open the output file, replacing .txt in the input name with .csv
     with open(args.txtfile.replace('.txt', '.csv'), 'w') as f:
-        header = ','.join(raw_data[5].split())
+
+        header_ind = ['yyyy' in l for l in raw_data].index(True)
+        header = ','.join(raw_data[header_ind].split())
         
         nsep = header.count(',') # count the number of commas in the header
         
-        print(','.join(raw_data[5].split()), file=f) # print the column header to the file
+        print(','.join(raw_data[header_ind].split()), file=f) # print the column header to the file
         
-        for line in raw_data[7:]:
-            clean_line = line.replace('*', '').replace('#', '') # remove all * and # characters
+        for line in raw_data[header_ind+2:]:
+            clean_line = line.replace('*', '').replace('#', '').replace('$', '') # remove all *, #, and $ characters
             clean_line = ','.join(clean_line.split()).replace('---', '') # replace all --- characters after replacing spaces with ,
     
             if clean_line.count(',') == nsep: # this will only write the line if it has the same # of columns as the header
